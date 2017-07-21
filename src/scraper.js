@@ -106,16 +106,13 @@ async function fetchClick(isLessThen24Products) {
   scrollTimeouts[2600] = 100;
   scrollTimeouts[3000] = 300;
 
+  if (isLessThen24Products) {
+    scrollTimeouts[3500] = 200;
+  }
 
   for (let yPos in scrollTimeouts) {
     await helper.sleep(scrollTimeouts[yPos],
       async () => await helper.scrollTo(yPos)
-    );
-  }
-
-  if (isLessThen24Products) {
-    await helper.sleep(200,
-      async () => await helper.scrollTo(3500)
     );
   }
 
