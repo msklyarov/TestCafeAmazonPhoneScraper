@@ -111,40 +111,42 @@ async function getAsin() {
 
 async function fetchClick(isLessThen24Products) {
   const scrollTimeouts = [];
-  scrollTimeouts[500] = 800;
-  scrollTimeouts[1000] = 1200;
-  scrollTimeouts[1500] = 1600;
-  scrollTimeouts[2200] = 2000;
-  scrollTimeouts[2600] = 2200;
-  scrollTimeouts[3000] = 2400;
-  scrollTimeouts[4000] = 3000;
+  scrollTimeouts[800] = 500;
+  scrollTimeouts[1200] = 500;
+  scrollTimeouts[1600] = 500;
+  scrollTimeouts[2000] = 700;
+  scrollTimeouts[2200] = 400;
+  scrollTimeouts[2400] = 400;
+  scrollTimeouts[3000] = 1000;
 
-  for (let timeout in scrollTimeouts) {
-    setTimeout(async function(){
-      await helper.scrollTo(scrollTimeouts[timeout]);
-    }, Number(timeout));
+
+  for (let yPos in scrollTimeouts) {
+    await helper.sleep(scrollTimeouts[yPos],
+      async () => await helper.scrollTo(yPos)
+    );
   }
 
   if (isLessThen24Products) {
-    setTimeout(async function(){
-      await helper.scrollTo(3500);
-    }, 5000);
-
+    await helper.sleep(2000,
+      async () => await helper.scrollTo(3500)
+    );
   } else {
-    setTimeout(async function(){
-      await helper.scrollTo(2600);
-    }, 3500);
+    await helper.sleep(500,
+      async () => await helper.scrollTo(2600)
+    );
   }
 
-  setTimeout(async function(){
-    if (!isLessThen24Products) {
-      count++;
+  await helper.sleep(1000,
+    async () => {
+      if (!isLessThen24Products) {
+        count++;
+      }
+      await getAsin();
     }
-    await getAsin();
-  }, 6000);
+  );
 }
 
 test('Amazon Products Scraper', async () => {
   await getAsin();
-  await helper.sleep(8000 * await helper.getResultsListContainerChildCount(), () => {});
+  await helper.sleep(80000 * await helper.getResultsListContainerChildCount(), () => {});
 });
