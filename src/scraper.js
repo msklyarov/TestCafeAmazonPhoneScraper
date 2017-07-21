@@ -98,6 +98,8 @@ async function getAsin() {
   } //if count < pages_count ends
 } //getAsin ends
 
+
+// We run scraping here
 test('Amazon Products Scraper', async () => {
   pagesCount = await helper.getPagesCount();
   await getAsin();
