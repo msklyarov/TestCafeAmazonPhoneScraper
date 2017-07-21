@@ -14,6 +14,36 @@ class Helper {
     return fn(...args);
   }
 
+  static async fetchClick(isLessThen24Products) {
+    const scrollTimeouts = [];
+    scrollTimeouts[800] = 200;
+    scrollTimeouts[1200] = 200;
+    scrollTimeouts[1600] = 300;
+    scrollTimeouts[2000] = 100;
+    scrollTimeouts[2200] = 200;
+    scrollTimeouts[2400] = 100;
+    scrollTimeouts[2600] = 100;
+    scrollTimeouts[3000] = 300;
+
+    if (isLessThen24Products) {
+      scrollTimeouts[3500] = 200;
+    }
+
+    for (let yPos in scrollTimeouts) {
+      await Helper.sleep(scrollTimeouts[yPos],
+        async () => await Helper.scrollTo(yPos)
+      );
+    }
+
+    await Helper.sleep(300,
+      async () => {
+        if (!isLessThen24Products) {
+          await Helper.clickNextPage();
+        }
+      }
+    );
+  }
+
   static fetchAsin = ClientFunction(
     (i) => document.getElementById('s-results-list-atf')
       .children[i].getAttribute("data-asin")

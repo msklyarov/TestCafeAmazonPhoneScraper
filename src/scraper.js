@@ -59,7 +59,8 @@ async function getAsin() {
       if (count < pagesCount) {
         if(productArray.length < 24) {
           console.log("Product count less than 24");
-          await fetchClick(true);
+          await helper.fetchClick(true);
+          await getAsin();
         }
 
         if (productArray.length === 24) {
@@ -74,7 +75,9 @@ async function getAsin() {
 
           await helper.sleep(interval,
             async () => {
-              await fetchClick(false);
+              await helper.fetchClick(false);
+              count++;
+              await getAsin();
             }
           );
         }
@@ -94,38 +97,6 @@ async function getAsin() {
     });
   } //if count < pages_count ends
 } //getAsin ends
-
-async function fetchClick(isLessThen24Products) {
-  const scrollTimeouts = [];
-  scrollTimeouts[800] = 200;
-  scrollTimeouts[1200] = 200;
-  scrollTimeouts[1600] = 300;
-  scrollTimeouts[2000] = 100;
-  scrollTimeouts[2200] = 200;
-  scrollTimeouts[2400] = 100;
-  scrollTimeouts[2600] = 100;
-  scrollTimeouts[3000] = 300;
-
-  if (isLessThen24Products) {
-    scrollTimeouts[3500] = 200;
-  }
-
-  for (let yPos in scrollTimeouts) {
-    await helper.sleep(scrollTimeouts[yPos],
-      async () => await helper.scrollTo(yPos)
-    );
-  }
-
-  await helper.sleep(300,
-    async () => {
-      if (!isLessThen24Products) {
-        await helper.clickNextPage();
-        count++;
-      }
-      await getAsin();
-    }
-  );
-}
 
 test('Amazon Products Scraper', async () => {
   pagesCount = await helper.getPagesCount();
