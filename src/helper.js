@@ -63,9 +63,9 @@ class Helper {
         priceText = priceText.replace(/,/g, '');
         priceText = parseFloat(priceText);
       }
-
-      return priceText;
     }
+
+    return priceText;
   });
 
   static fetchRatingAndNumberOfReviews = ClientFunction((i) => {
