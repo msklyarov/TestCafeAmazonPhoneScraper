@@ -1,5 +1,5 @@
-- Install node.js(https://nodejs.org/en/download/)
-- Install DevExpress/testcafe(https://github.com/DevExpress/testcafe) globally:
+- Install [node.js](https://nodejs.org/en/download/)
+- Install [DevExpress/testcafe](https://github.com/DevExpress/testcafe) globally:
 ```
 npm install -g testcafe
 ```
