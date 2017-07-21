@@ -11,3 +11,4 @@ npm test
 ```
 npm start
 ```
+- config.js is used to set up Amazon page link and filename for the JSON output
