@@ -10,37 +10,25 @@ fixture `Example page`
 //for each category in a JSON file
 
 let count = 1;
-//var product_count = 0;
 let dataItems = [];
-//localStorage.setItem("data", dataItems);
 
-// //Fetch the total number of pages
-// const pages_count_text = document.getElementsByClassName("pagnDisabled");
-//
-// //Data is returned as string, parse the integer value from it
-// const pages_count = parseInt(pages_count_text[0].innerText);
+let pagesCount;
 
-
-//getAsin function begins
 async function getAsin() {
+  console.log('Page count: ', count);
+
   const productArray = [];
   let productPosition = undefined;
 
-  const pagesCount = await helper.getPagesCount();
-
-  //Check if the count is less than the page count
+  // Check if the count is less than the page count
   if (count <= pagesCount) {
-
-    await helper.sleep(2000, async function() {
-      //Get the parent ul element containing all the products
-      // const resultsListContainer = getResultsListContainer();
-
-      //Loop through all the child elements
+    await helper.sleep(300, async () => {
+      // Loop through all the child elements
       for (let i = 0; i < await helper.getResultsListContainerChildCount(); i++) {
         if (i < 24) {
           const [title, brand] = await helper.fetchTitleAndBrandName(i);
 
-          const [rating_text, rating, number_of_reviews, reviews_link] =
+          const [ratingText, rating, numberOfReviews, reviewsLink] =
             await helper.fetchRatingAndNumberOfReviews(i);
 
           productPosition = i+1 + ((count - 1) * 24);
@@ -50,10 +38,10 @@ async function getAsin() {
             title: title,
             brand: brand,
             price_text: await helper.fetchPrice(i),
-            rating_text: rating_text,
+            rating_text: ratingText,
             rating: rating,
-            number_of_reviews: number_of_reviews,
-            reviews_link: reviews_link,
+            number_of_reviews: numberOfReviews,
+            reviews_link: reviewsLink,
             image_link: await helper.fetchImage(i),
             product_position: productPosition,
             cod: await helper.fetchCod(i),
@@ -84,10 +72,11 @@ async function getAsin() {
           fs.writeFileSync(config.outputFile, JSON.stringify(dataItems, null, 2));
           console.log("Page :", count, " done\n");
 
-          setTimeout(async function() {
-            await helper.clickNextPage();
-            await fetchClick(false);
-          }, interval);
+          await helper.sleep(interval,
+            async () => {
+              await fetchClick(false);
+            }
+          );
         }
       }
 
@@ -101,9 +90,6 @@ async function getAsin() {
 
         console.log("Page :", count, " done\n");
         console.log("Finished fetching data");
-        //Function to start the csv
-        //downloadCSV({ filename: "stock-data.csv" });
-        //console.save(dataItems);
       }
     });
   } //if count < pages_count ends
@@ -111,13 +97,14 @@ async function getAsin() {
 
 async function fetchClick(isLessThen24Products) {
   const scrollTimeouts = [];
-  scrollTimeouts[800] = 500;
-  scrollTimeouts[1200] = 500;
-  scrollTimeouts[1600] = 500;
-  scrollTimeouts[2000] = 700;
-  scrollTimeouts[2200] = 400;
-  scrollTimeouts[2400] = 400;
-  scrollTimeouts[3000] = 1000;
+  scrollTimeouts[800] = 200;
+  scrollTimeouts[1200] = 200;
+  scrollTimeouts[1600] = 300;
+  scrollTimeouts[2000] = 100;
+  scrollTimeouts[2200] = 200;
+  scrollTimeouts[2400] = 100;
+  scrollTimeouts[2600] = 100;
+  scrollTimeouts[3000] = 300;
 
 
   for (let yPos in scrollTimeouts) {
@@ -127,18 +114,15 @@ async function fetchClick(isLessThen24Products) {
   }
 
   if (isLessThen24Products) {
-    await helper.sleep(2000,
+    await helper.sleep(200,
       async () => await helper.scrollTo(3500)
-    );
-  } else {
-    await helper.sleep(500,
-      async () => await helper.scrollTo(2600)
     );
   }
 
-  await helper.sleep(1000,
+  await helper.sleep(300,
     async () => {
       if (!isLessThen24Products) {
+        await helper.clickNextPage();
         count++;
       }
       await getAsin();
@@ -147,6 +131,6 @@ async function fetchClick(isLessThen24Products) {
 }
 
 test('Amazon Products Scraper', async () => {
+  pagesCount = await helper.getPagesCount();
   await getAsin();
-  await helper.sleep(80000 * await helper.getResultsListContainerChildCount(), () => {});
 });

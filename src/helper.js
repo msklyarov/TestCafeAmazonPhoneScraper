@@ -24,13 +24,13 @@ class Helper {
     const el = document.getElementById('s-results-list-atf')
       .children[i].getElementsByClassName("s-access-title");
 
-    if (el[0] !== undefined) {
+    if (!!el[0]) {
       title = el[0].innerText;
       title = title.replace(/,/g, "");
 
-      if (el[0].parentNode.parentNode.nextElementSibling !== null) {
+      if (el[0].parentNode.parentNode.nextElementSibling) {
         brand = el[0].parentNode.parentNode.nextElementSibling.children[1].innerText;
-        brand = brand.replace(/,/g, "");
+        brand = brand.replace(/,/g, '');
       } else {
         brand = "N/A";
       }
@@ -43,69 +43,67 @@ class Helper {
   });
 
   static fetchPrice = ClientFunction((i) => {
-    let price_text = 0;
+    let priceText = 0;
     const el = document.getElementById('s-results-list-atf')
       .children[i].getElementsByClassName("s-price");
 
     //Check if the s-price class is used
-    if (el[0] !== undefined) {
-      price_text = el[0].innerText;
-      price_text = price_text.replace(/,/g, "");
-      price_text = parseFloat(price_text);
+    if (!!el[0]) {
+      priceText = el[0].innerText;
+      priceText = priceText.replace(/,/g, '');
+      priceText = parseFloat(priceText);
     } else {
       //Check if price is mentioned other way
       const otherEl =
         document.getElementById('s-results-list-atf')
           .children[i].getElementsByClassName("a-color-price");
 
-      if (otherEl[0] !== undefined) {
-        price_text = otherEl[0].innerText;
-        price_text = price_text.replace(/,/g, "");
-        price_text = parseFloat(price_text);
+      if (!!otherEl[0]) {
+        priceText = otherEl[0].innerText;
+        priceText = priceText.replace(/,/g, '');
+        priceText = parseFloat(priceText);
       }
 
-      return price_text;
+      return priceText;
     }
   });
 
   static fetchRatingAndNumberOfReviews = ClientFunction((i) => {
-    let rating_text = "N/A";
+    let ratingText = "N/A";
     let rating = 0;
-    let number_of_reviews = 0;
-    let reviews_link = "N/A";
+    let numberOfReviews = 0;
+    let reviewsLink = "N/A";
 
     const el = document.getElementById('s-results-list-atf')
       .children[i].getElementsByClassName("a-icon-star");
 
-    if (el[0] !== undefined)
+    if (!!el[0])
     {
-      rating_text = el[0].innerText;
-      rating_text = rating_text.replace(/,/g,"");
-      rating = parseFloat(rating_text);
+      ratingText = el[0].innerText;
+      ratingText = ratingText.replace(/,/g, '');
+      rating = parseFloat(ratingText);
 
-      if (el[0].parentNode.parentNode.parentNode.nextElementSibling !== undefined)
-      {
+      if (!!el[0].parentNode.parentNode.parentNode.nextElementSibling) {
+        numberOfReviews = el[0].parentNode.parentNode.parentNode.nextElementSibling.innerText;
+        numberOfReviews = numberOfReviews.replace(/,/g, '');
 
-        number_of_reviews = el[0].parentNode.parentNode.parentNode.nextElementSibling.innerText;
-        number_of_reviews = number_of_reviews.replace(/,/g, "");
-
-        reviews_link = el[0].parentNode.parentNode.parentNode.nextElementSibling.getAttribute('href');
+        reviewsLink = el[0].parentNode.parentNode.parentNode.nextElementSibling.getAttribute('href');
       }
     }
 
-    return [rating_text, rating, number_of_reviews, reviews_link];
+    return [ratingText, rating, numberOfReviews, reviewsLink];
   });
 
   static fetchImage = ClientFunction((i) => {
-    let image_link = "N/A";
+    let imageLink = "N/A";
 
     const el = document.getElementById('s-results-list-atf')
       .children[i].getElementsByTagName("img");
-    if (el[0] !== undefined) {
-      image_link = el[0].getAttribute('src');
+    if (!!el[0]) {
+      imageLink = el[0].getAttribute('src');
     }
 
-    return image_link;
+    return imageLink;
   });
 
   static fetchPrime = ClientFunction(
@@ -120,8 +118,8 @@ class Helper {
   });
 
   static getPagesCount = ClientFunction(() => {
-    const pages_count_text = document.getElementsByClassName("pagnDisabled");
-    return parseInt(pages_count_text[0].innerText);
+    const pagesCountText = document.getElementsByClassName("pagnDisabled");
+    return parseInt(pagesCountText[0].innerText);
   });
 
   static scrollTo = ClientFunction((yPos) => window.scrollTo(0, yPos));
