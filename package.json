@@ -2,9 +2,10 @@
   "name": "test-cafe-amazon-phone-scraper",
   "version": "1.0.0",
   "description": "testCafe scraper of smartphones from Amazon",
-  "main": "index.js",
+  "main": "src/scraper.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "testcafe chrome:headless src/scraper.js",
+    "test": "testcafe chrome src/scraper.js"
   },
   "repository": {
     "type": "git",

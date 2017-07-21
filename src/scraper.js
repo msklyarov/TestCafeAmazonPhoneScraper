@@ -1,4 +1,5 @@
 import { ClientFunction } from 'testcafe';
+import fs from 'fs';
 import helper from './helper';
 import config from '../config';
 
@@ -8,10 +9,10 @@ fixture `Example page`
 //Script to be run on Amazon website to fetch asins/pricing/rating/image/product_position/
 //for each category in a JSON file
 
-var count = 1;
+let count = 1;
 //var product_count = 0;
-const data_items = [];
-//localStorage.setItem("data", data_items);
+let dataItems = [];
+//localStorage.setItem("data", dataItems);
 
 // //Fetch the total number of pages
 // const pages_count_text = document.getElementsByClassName("pagnDisabled");
@@ -22,13 +23,13 @@ const data_items = [];
 
 //getAsin function begins
 async function getAsin() {
-  const product_array = [];
-  let product_position = undefined;
+  const productArray = [];
+  let productPosition = undefined;
 
-  const pages_count = await helper.getPagesCount();
+  const pagesCount = await helper.getPagesCount();
 
   //Check if the count is less than the page count
-  if (count <= pages_count) {
+  if (count <= pagesCount) {
 
     await helper.sleep(2000, async function() {
       //Get the parent ul element containing all the products
@@ -42,7 +43,7 @@ async function getAsin() {
           const [rating_text, rating, number_of_reviews, reviews_link] =
             await helper.fetchRatingAndNumberOfReviews(i);
 
-          product_position = i+1 + ((count - 1) * 24);
+          productPosition = i+1 + ((count - 1) * 24);
 
           let product = {
             asin: await helper.fetchAsin(i),
@@ -54,32 +55,33 @@ async function getAsin() {
             number_of_reviews: number_of_reviews,
             reviews_link: reviews_link,
             image_link: await helper.fetchImage(i),
-            product_position: product_position,
+            product_position: productPosition,
             cod: await helper.fetchCod(i),
             prime: await helper.fetchPrime(i)
           };
 
-          product_array.push(product);
+          productArray.push(product);
         } //Condition to check for 24 children element ends
       }
 
       let interval = helper.getRandomArbitrary(300, 500);
 
-      console.log("Number of products pushed to database: ", product_array.length);
+      console.log("Number of products pushed to database: ", productArray.length);
 
-      if (count < pages_count) {
-        if(product_array.length < 24) {
+      if (count < pagesCount) {
+        if(productArray.length < 24) {
           console.log("Product count less than 24");
           await fetchClick(true);
         }
 
-        if (product_array.length === 24) {
-          product_array.forEach(function (item) {
-            console.log("Pushed item: ", item.product_position);
-            data_items.push(item);
+        if (productArray.length === 24) {
 
-            console.log(JSON.stringify(item, null, 2));
+          productArray.forEach(function (item) {
+            console.log("Pushed item: ", item.product_position);
           });
+
+          dataItems = dataItems.concat(productArray);
+          fs.writeFileSync(config.outputFile, JSON.stringify(dataItems, null, 2));
           console.log("Page :", count, " done\n");
 
           setTimeout(async function() {
@@ -89,18 +91,19 @@ async function getAsin() {
         }
       }
 
-      if (count === pages_count) {
-        product_array.forEach(function (item) {
+      if (count === pagesCount) {
+        productArray.forEach(function (item) {
           console.log("Pushed item: ", item.product_position);
-          data_items.push(item);
-          //localStorage.setItem("items",data_items);
+          //localStorage.setItem("items",dataItems);
         });
+        dataItems = dataItems.concat(productArray);
+        fs.writeFileSync(config.outputFile, JSON.stringify(dataItems, null, 2));
 
         console.log("Page :", count, " done\n");
         console.log("Finished fetching data");
         //Function to start the csv
         //downloadCSV({ filename: "stock-data.csv" });
-        //console.save(data_items);
+        //console.save(dataItems);
       }
     });
   } //if count < pages_count ends
@@ -131,7 +134,6 @@ async function fetchClick(isLessThen24Products) {
     setTimeout(async function(){
       await helper.scrollTo(2600);
     }, 3500);
-
   }
 
   setTimeout(async function(){
