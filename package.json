@@ -1,0 +1,19 @@
+{
+  "name": "test-cafe-amazon-phone-scraper",
+  "version": "1.0.0",
+  "description": "testCafe scraper of smartphones from Amazon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msklyarov/TestCafeAmazonPhoneScraper.git"
+  },
+  "author": "Maxim Sklyarov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msklyarov/TestCafeAmazonPhoneScraper/issues"
+  },
+  "homepage": "https://github.com/msklyarov/TestCafeAmazonPhoneScraper#readme"
+}
